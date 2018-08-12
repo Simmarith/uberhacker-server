@@ -1,0 +1,24 @@
+{
+  "name": "uberhacker-server",
+  "version": "0.1.0",
+  "description": "The host for uberhacker-client",
+  "main": "app/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Simmarith/uberhacker-server.git"
+  },
+  "author": "Simmarith",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Simmarith/uberhacker-server/issues"
+  },
+  "homepage": "https://github.com/Simmarith/uberhacker-server#readme",
+  "dependencies": {
+    "cors": "^2.8.4",
+    "express": "^4.16.3"
+  }
+}
