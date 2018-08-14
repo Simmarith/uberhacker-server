@@ -1,4 +1,4 @@
-const app = require('./../index.js').app
+const wsUtils = require('../utils/WebSocket')
 
 /** USER SPEC
  *  id {string} nickname of the user. MUST BE UNIQUE!
@@ -12,9 +12,26 @@ class UserHandler {
     this.users = []
   }
 
-  init (app) {
+  init (app, wss) {
+    // WebSocket
+    this.wss = wss
+    wss.on('connection', (ws) => {
+      ws.on('message', (message) => {
+      });
+      ws.on('close', () => {
+      })
+    });
+    // Express
+    app.post('/user/remove', (req, res) => {
+      if (req.body.id) {
+        this.removeUser(req.body.id)
+        res.send()
+      } else {
+        res.status(400).send('Bad Request')
+      }
+    })
+
     app.post('/user/add', (req, res) => {
-      console.log(req.body)
       if (req.body.id) {
         this.addUser(req.body.id)
         res.send()
@@ -34,7 +51,7 @@ class UserHandler {
         }
       } else {
         res.status(404).send('Bad Request')
-     }
+      }
     })
 
     app.get('/users', (req, res) => {
@@ -46,6 +63,22 @@ class UserHandler {
   addUser (id) {
     if (!this.getUserById(id)) {
       this.users.push({ id, points: USER_START_POINTS })
+      this.updateClients()
+    }
+  }
+
+  removeUser (id) {
+    this.users.forEach((user, index) => {
+      if (user.id === id) {
+        this.users.splice(index, 1)
+        this.updateClients()
+      }
+    })
+  }
+
+  updateClients () {
+    if (this.wss) {
+      wsUtils.sendToAll(this.wss, { type: 'usersListUpdate', users: this.users })
     }
   }
 
